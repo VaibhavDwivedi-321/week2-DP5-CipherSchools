@@ -1,0 +1,138 @@
+
+import java.util.*;
+
+class DeleteInBst {
+
+	static class Node {
+		int key;
+		Node left, right;
+	}
+
+	
+	static Node newNode(int item)
+	{
+		Node temp = new Node();
+		temp.key = item;
+		temp.left = temp.right = null;
+		return temp;
+	}
+
+	
+	static void inorder(Node root)
+	{
+		if (root != null) {
+			inorder(root.left);
+			System.out.print(root.key + " ");
+			inorder(root.right);
+		}
+	}
+
+	
+	static Node insert(Node node, int key)
+	{
+
+		// If the tree is empty, return a new node
+		if (node == null)
+			return newNode(key);
+
+		// Otherwise, recur down the tree
+		if (key < node.key)
+			node.left = insert(node.left, key);
+		else
+			node.right = insert(node.right, key);
+
+		// Return the (unchanged) node pointer
+		return node;
+	}
+
+	
+	static Node deleteNode(Node root, int k)
+	{
+
+		// Base case
+		if (root == null)
+			return root;
+
+		
+		if (root.key > k) {
+			root.left = deleteNode(root.left, k);
+			return root;
+		}
+		else if (root.key < k) {
+			root.right = deleteNode(root.right, k);
+			return root;
+		}
+
+	
+		if (root.left == null) {
+			Node temp = root.right;
+			return temp;
+		}
+		else if (root.right == null) {
+			Node temp = root.left;
+			return temp;
+		}
+
+		// If both children exist
+		else {
+			Node succParent = root;
+
+			// Find successor
+			Node succ = root.right;
+
+			while (succ.left != null) {
+				succParent = succ;
+				succ = succ.left;
+			}
+
+		
+			if (succParent != root)
+				succParent.left = succ.right;
+			else
+				succParent.right = succ.right;
+
+			// Copy Successor Data to root
+			root.key = succ.key;
+
+			return root;
+		}
+	}
+
+	
+	public static void main(String args[])
+	{
+
+		Node root = null;
+		root = insert(root, 50);
+		root = insert(root, 30);
+		root = insert(root, 20);
+		root = insert(root, 40);
+		root = insert(root, 70);
+		root = insert(root, 60);
+		root = insert(root, 80);
+
+		System.out.println("Inorder traversal of the "
+						+ "given tree");
+		inorder(root);
+
+		System.out.println("\nDelete 20\n");
+		root = deleteNode(root, 20);
+		System.out.println("Inorder traversal of the "
+						+ "modified tree");
+		inorder(root);
+
+		System.out.println("\nDelete 30\n");
+		root = deleteNode(root, 30);
+		System.out.println("Inorder traversal of the "
+						+ "modified tree");
+		inorder(root);
+
+		System.out.println("\nDelete 50\n");
+		root = deleteNode(root, 50);
+		System.out.println("Inorder traversal of the "
+						+ "modified tree");
+		inorder(root);
+	}
+}
+
+
